@@ -17,3 +17,11 @@ def client(app):
 @pytest.fixture()
 def db(app):
     return _db
+
+@pytest.fixture(autouse=True)
+def clean_db(app):
+    yield
+    with app.app_context():
+        for table in reversed(_db.metadata.sorted_tables):
+            _db.session.execute(table.delete())
+        _db.session.commit()

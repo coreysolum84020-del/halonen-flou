@@ -1,3 +1,4 @@
+import pytest
 from datetime import datetime
 from app.models import ContactMessage, Subscriber
 
@@ -35,9 +36,9 @@ def test_subscriber_creation(db, app):
 
 def test_subscriber_service_type_validation(app):
     with app.app_context():
-        sub = Subscriber(
-            email='test@example.com',
-            name='Test Artist',
-            service_type='invalid_type',
-        )
-        assert sub.service_type not in ['promotion', 'lessons', 'production']
+        with pytest.raises(ValueError):
+            Subscriber(
+                email='test@example.com',
+                name='Test Artist',
+                service_type='invalid_type',
+            )
