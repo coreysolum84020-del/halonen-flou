@@ -19,6 +19,12 @@ def create_app(config_name='default'):
     app.register_blueprint(contact_bp)
     app.register_blueprint(subscriptions_bp)
 
+    from datetime import datetime
+
+    @app.context_processor
+    def inject_year():
+        return {'current_year': datetime.now().year}
+
     with app.app_context():
         from . import models  # noqa: F401 — ensures tables are created
         db.create_all()

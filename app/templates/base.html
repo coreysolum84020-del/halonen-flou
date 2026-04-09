@@ -9,9 +9,9 @@
 </head>
 <body>
 
-  <nav class="navbar">
+  <nav class="navbar" aria-label="Main navigation">
     <a href="{{ url_for('main.index') }}" class="navbar-brand">HALONEN FLOU</a>
-    <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation">
+    <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
     <ul class="navbar-nav" id="navMenu">
@@ -40,7 +40,7 @@
 
   <div class="neon-divider"></div>
   <footer class="footer">
-    <div class="footer-copy">© 2025 HALONEN FLOU. All rights reserved.</div>
+    <div class="footer-copy">© {{ current_year }} HALONEN FLOU. All rights reserved.</div>
     <ul class="footer-links">
       <li><a href="{{ url_for('main.about') }}">About</a></li>
       <li><a href="{{ url_for('services.overview') }}">Services</a></li>
@@ -50,5 +50,6 @@
   </footer>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

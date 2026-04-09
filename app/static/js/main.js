@@ -2,14 +2,18 @@
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
 if (navToggle && navMenu) {
-  navToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
+  navToggle.addEventListener('click', () => {
+    const isOpen = navMenu.classList.toggle('open');
+    navToggle.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
 }
 
 // FAQ accordion
 document.querySelectorAll('.faq-question').forEach(question => {
   question.addEventListener('click', () => {
-    const item = question.parentElement;
-    item.classList.toggle('open');
+    const item = question.closest('.faq-item');
+    if (item) item.classList.toggle('open');
   });
 });
 
