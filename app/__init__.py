@@ -22,8 +22,12 @@ def create_app(config_name='default'):
     from datetime import datetime
 
     @app.context_processor
-    def inject_year():
-        return {'current_year': datetime.now().year}
+    def inject_globals():
+        return {
+            'current_year': datetime.now().year,
+            'contact_email': 'bluealikeu@gmail.com',
+            'contact_phone': '+19295039212',
+        }
 
     with app.app_context():
         from . import models  # noqa: F401 — ensures tables are created

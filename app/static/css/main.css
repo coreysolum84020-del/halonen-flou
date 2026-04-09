@@ -596,6 +596,29 @@ ol {
   color: var(--secondary);
 }
 
+/* ===== ARTIST CASE CARDS ===== */
+.artist-case-card {
+  background: rgba(138, 43, 226, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 36px;
+  align-items: start;
+  transition: border-color 0.3s;
+}
+
+.artist-case-card--alt {
+  border-color: var(--border-blue);
+}
+
+.section-eyebrow--left {
+  text-align: left;
+  margin-bottom: 8px;
+}
+
 /* =============================================================================
    11. CTA BANNER
    ============================================================================= */
