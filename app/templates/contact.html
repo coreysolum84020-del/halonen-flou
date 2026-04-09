@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Contact{% endblock %}
+{% block meta_description %}Contact HALONEN FLOU — reach Brent Halonen via email, phone, or our contact form.{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <p class="section-eyebrow section-eyebrow--left">Get In Touch</p>
+  <h1 class="page-title">Contact Us</h1>
+  <p class="page-subtitle">Have a question? Want to discuss a project? We'd love to hear from you.</p>
+</div>
+
+<section class="section">
+  <div class="contact-grid">
+
+    <!-- Contact Info -->
+    <div class="fade-in">
+      <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:28px;">Direct Contact</h2>
+
+      <div class="contact-info-item">
+        <div class="contact-icon">📧</div>
+        <div>
+          <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Email</div>
+          <a href="mailto:{{ contact_email }}" style="color:var(--text);">{{ contact_email }}</a>
+        </div>
+      </div>
+
+      <div class="contact-info-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Phone</div>
+          <a href="tel:{{ contact_phone }}" style="color:var(--text);">{{ contact_phone }}</a>
+        </div>
+      </div>
+
+      <div class="contact-info-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Location</div>
+          <span>New York City, NY</span>
+        </div>
+      </div>
+
+      <div class="contact-info-item">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Response Time</div>
+          <span>Within 24 hours</span>
+        </div>
+      </div>
+
+      <div style="margin-top:36px;padding:24px;background:rgba(138,43,226,0.06);border:1px solid var(--border);border-radius:12px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Ready to Subscribe?</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Skip the form and go straight to choosing your service plan.</p>
+        <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary" style="font-size:11px;padding:9px 20px;">View Plans →</a>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="fade-in">
+      <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:28px;">Send a Message</h2>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('contact.contact') }}" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+          <label class="form-label" for="name">Your Name</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Nova Raines" value="{{ form_data.get('name', '') }}" required>
+          {% if errors.get('name') %}<div class="form-error">{{ errors.name }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="your@email.com" value="{{ form_data.get('email', '') }}" required>
+          {% if errors.get('email') %}<div class="form-error">{{ errors.email }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" class="form-control" placeholder="e.g. Inquiry about promotion services" value="{{ form_data.get('subject', '') }}" required>
+          {% if errors.get('subject') %}<div class="form-error">{{ errors.subject }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">Message</label>
+          <textarea id="message" name="message" class="form-control" placeholder="Tell us about your project, your goals, or any questions you have..." required>{{ form_data.get('message', '') }}</textarea>
+          {% if errors.get('message') %}<div class="form-error">{{ errors.message }}</div>{% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Send Message →</button>
+      </form>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
