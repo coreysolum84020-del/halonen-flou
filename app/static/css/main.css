@@ -22,6 +22,12 @@
   --border-blue: rgba(0, 191, 255, 0.3);
   --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --error: #ff4d6d;
+  --error-glow: rgba(255, 77, 109, 0.3);
+  --success: #00bf64;
+  --success-glow: rgba(0, 191, 100, 0.3);
+  --z-navbar: 100;
+  --z-overlay: 50;
 }
 
 /* =============================================================================
@@ -79,7 +85,7 @@ ol {
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-navbar);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -453,8 +459,9 @@ ol {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .card-grid-3 {
@@ -704,7 +711,7 @@ textarea.form-control {
 
 .form-error {
   font-size: 0.8rem;
-  color: #ff4d6d;
+  color: var(--error);
   margin-top: 0.25rem;
 }
 
@@ -719,13 +726,13 @@ textarea.form-control {
 .flash-success {
   background-color: rgba(0, 191, 100, 0.12);
   border: 1px solid rgba(0, 191, 100, 0.35);
-  color: #00bf64;
+  color: var(--success);
 }
 
 .flash-error {
   background-color: rgba(255, 77, 109, 0.12);
-  border: 1px solid rgba(255, 77, 109, 0.35);
-  color: #ff4d6d;
+  border: 1px solid var(--error-glow);
+  color: var(--error);
 }
 
 /* =============================================================================
@@ -772,7 +779,7 @@ textarea.form-control {
   margin-left: 1rem;
 }
 
-.faq-question.open::after {
+.faq-item.open .faq-question::after {
   content: '−';
 }
 
@@ -786,7 +793,7 @@ textarea.form-control {
   line-height: 1.7;
 }
 
-.faq-answer.open {
+.faq-item.open .faq-answer {
   max-height: 600px;
   padding: 0 1.25rem 1.25rem;
 }
@@ -1175,17 +1182,6 @@ textarea.form-control {
    21. FADE-IN ANIMATION
    ============================================================================= */
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .fade-in {
   opacity: 0;
   transform: translateY(24px);
@@ -1360,4 +1356,10 @@ textarea.form-control {
   .navbar {
     padding: 0.65rem 1rem;
   }
+}
+
+/* ===== 25. REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .sound-bars span { animation: none; }
+  .fade-in { transition: none; }
 }
