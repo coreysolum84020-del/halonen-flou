@@ -13,7 +13,11 @@ if (navToggle && navMenu) {
 document.querySelectorAll('.faq-question').forEach(question => {
   question.addEventListener('click', () => {
     const item = question.closest('.faq-item');
-    if (item) item.classList.toggle('open');
+    if (item) {
+      item.classList.toggle('open');
+      const isOpen = item.classList.contains('open');
+      question.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
   });
 });
 

@@ -14,7 +14,7 @@ def test_promotion_page_returns_200(client):
 
 def test_promotion_page_shows_custom_price(client):
     response = client.get('/services/promotion')
-    assert b'budget' in response.data.lower() or b'custom' in response.data.lower()
+    assert b'your budget' in response.data.lower() or b'custom' in response.data.lower()
 
 def test_lessons_page_returns_200(client):
     response = client.get('/services/lessons')

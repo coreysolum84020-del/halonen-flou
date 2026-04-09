@@ -13,7 +13,7 @@
 <section class="section">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:900px;margin:0 auto;" class="fade-in">
     <div>
-      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">What's Included</h2>
+      <h3 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">What's Included</h3>
       <ul class="includes-list">
         <li>Pre-production planning &amp; arrangement</li>
         <li>Studio recording sessions (up to 3 tracks)</li>
@@ -26,10 +26,10 @@
       </ul>
     </div>
     <div>
-      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">Project Scope</h2>
+      <h3 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">Project Scope</h3>
       <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">The $2,500 project fee covers a complete single or EP (up to 3 tracks) from pre-production through final masters. Larger projects (full albums, 4+ tracks) are quoted separately.</p>
       <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:24px;">Timeline: typically 4–6 weeks from kickoff to delivery, depending on project complexity and revision rounds.</p>
-      <a href="{{ url_for('subscriptions.subscribe') }}?service=production" class="btn btn-primary">Start a Project →</a>
+      <a href="{{ url_for('subscriptions.subscribe', service='production') }}" class="btn btn-primary">Start a Project →</a>
     </div>
   </div>
 </section>
@@ -40,21 +40,31 @@
   <h2 class="section-title">Frequently Asked Questions</h2>
   <div style="max-width:680px;margin:0 auto;">
     <div class="faq-item">
-      <div class="faq-question">What do I need to bring to the project?</div>
+      <button type="button" class="faq-question" aria-expanded="false">What do I need to bring to the project?</button>
       <div class="faq-answer">Just your ideas and any existing recordings or demos. We'll handle the rest — arrangement, production, session musicians if needed, mixing, and mastering.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-question">What if I need more than 3 tracks?</div>
+      <button type="button" class="faq-question" aria-expanded="false">What if I need more than 3 tracks?</button>
       <div class="faq-answer">For projects exceeding 3 tracks, we provide a custom quote based on scope and complexity. Contact us to discuss your full vision before subscribing.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-question">Do I own the masters?</div>
+      <button type="button" class="faq-question" aria-expanded="false">Do I own the masters?</button>
       <div class="faq-answer">Yes, 100%. You retain full ownership of all masters and recordings produced under this agreement. We retain no rights to your music.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-question">Can I combine production with promotion services?</div>
+      <button type="button" class="faq-question" aria-expanded="false">Can I combine production with promotion services?</button>
       <div class="faq-answer">Absolutely — and we recommend it. Many clients use our production service to create the music and then activate the promotion package for release. Contact us for combined service pricing.</div>
     </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+<section class="cta-banner">
+  <p class="cta-eyebrow">Start a Project</p>
+  <h2 class="cta-title">Ready to Record?</h2>
+  <p class="cta-subtitle">From raw idea to release-ready track. Flat $2,500 project fee, full ownership of masters.</p>
+  <div class="cta-actions">
+    <a href="{{ url_for('subscriptions.subscribe', service='production') }}" class="btn btn-primary btn-lg">Start a Project →</a>
   </div>
 </section>
 {% endblock %}
