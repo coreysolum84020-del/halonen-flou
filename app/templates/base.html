@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HALONEN FLOU{% endblock %} — Music · Production · Promotion</title>
+  <meta name="description" content="{% block meta_description %}HALONEN FLOU — Professional music promotion, lessons, and artist production services.{% endblock %}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="{{ url_for('main.index') }}" class="navbar-brand">HALONEN FLOU</a>
+    <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="navbar-nav" id="navMenu">
+      <li><a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="active"{% endif %}>Home</a></li>
+      <li><a href="{{ url_for('main.about') }}" {% if request.endpoint == 'main.about' %}class="active"{% endif %}>About</a></li>
+      <li><a href="{{ url_for('services.overview') }}" {% if request.blueprint == 'services' %}class="active"{% endif %}>Services</a></li>
+      <li><a href="{{ url_for('main.artists') }}" {% if request.endpoint == 'main.artists' %}class="active"{% endif %}>Artists</a></li>
+      <li><a href="{{ url_for('contact.contact') }}" {% if request.blueprint == 'contact' %}class="active"{% endif %}>Contact</a></li>
+      <li><a href="{{ url_for('subscriptions.subscribe') }}" class="btn-subscribe">Subscribe</a></li>
+    </ul>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div style="padding: 0 40px; margin-top: 16px;">
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <div class="neon-divider"></div>
+  <footer class="footer">
+    <div class="footer-copy">© 2025 HALONEN FLOU. All rights reserved.</div>
+    <ul class="footer-links">
+      <li><a href="{{ url_for('main.about') }}">About</a></li>
+      <li><a href="{{ url_for('services.overview') }}">Services</a></li>
+      <li><a href="{{ url_for('contact.contact') }}">Contact</a></li>
+    </ul>
+    <div class="footer-contact">bluealikeu@gmail.com</div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
