@@ -1,3 +1,4 @@
+import re
 from flask import render_template, request, redirect, url_for, flash
 from . import contact_bp
 from app.extensions import db
@@ -15,7 +16,7 @@ def contact():
 
         if not name:
             errors['name'] = 'This field is required.'
-        if not email or '@' not in email:
+        if not email or not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
             errors['email'] = 'A valid email address is required.'
         if not subject:
             errors['subject'] = 'This field is required.'

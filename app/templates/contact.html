@@ -10,14 +10,15 @@
 </div>
 
 <section class="section">
-  <div class="contact-grid">
+  <div class="container">
+    <div class="contact-grid">
 
     <!-- Contact Info -->
     <div class="fade-in">
       <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:28px;">Direct Contact</h2>
 
       <div class="contact-info-item">
-        <div class="contact-icon">📧</div>
+        <div class="contact-icon" aria-hidden="true">📧</div>
         <div>
           <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Email</div>
           <a href="mailto:{{ contact_email }}" style="color:var(--text);">{{ contact_email }}</a>
@@ -25,7 +26,7 @@
       </div>
 
       <div class="contact-info-item">
-        <div class="contact-icon">📞</div>
+        <div class="contact-icon" aria-hidden="true">📞</div>
         <div>
           <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Phone</div>
           <a href="tel:{{ contact_phone }}" style="color:var(--text);">{{ contact_phone }}</a>
@@ -33,7 +34,7 @@
       </div>
 
       <div class="contact-info-item">
-        <div class="contact-icon">📍</div>
+        <div class="contact-icon" aria-hidden="true">📍</div>
         <div>
           <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Location</div>
           <span>New York City, NY</span>
@@ -41,7 +42,7 @@
       </div>
 
       <div class="contact-info-item">
-        <div class="contact-icon">🕐</div>
+        <div class="contact-icon" aria-hidden="true">🕐</div>
         <div>
           <div style="font-size:11px;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Response Time</div>
           <span>Within 24 hours</span>
@@ -58,14 +59,6 @@
     <!-- Contact Form -->
     <div class="fade-in">
       <h2 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:28px;">Send a Message</h2>
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="flash flash-{{ category }}">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
 
       <form method="POST" action="{{ url_for('contact.contact') }}" novalidate>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -98,6 +91,7 @@
       </form>
     </div>
 
+    </div>
   </div>
 </section>
 {% endblock %}

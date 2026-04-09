@@ -18,7 +18,7 @@ def test_contact_form_submit_success(client, db, app):
         'message': 'I want to promote my new single.',
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert b'message' in response.data.lower() or b'sent' in response.data.lower() or b'thank' in response.data.lower()
+    assert b'Your message has been sent' in response.data
 
 def test_contact_form_saves_to_db(client, db, app):
     with app.app_context():
@@ -48,4 +48,31 @@ def test_contact_form_empty_name_fails(client):
         'message': 'Message',
     })
     assert response.status_code == 200
-    assert b'required' in response.data.lower() or b'field' in response.data.lower()
+    assert b'This field is required.' in response.data
+
+
+def test_contact_form_repopulates_on_error(client):
+    response = client.post('/contact', data={
+        'name': 'Repop Test',
+        'email': '',
+        'subject': 'My Subject',
+        'message': 'My message',
+    })
+    assert response.status_code == 200
+    assert b'Repop Test' in response.data
+    assert b'My Subject' in response.data
+
+
+def test_contact_form_all_fields_empty_fails(client, db, app):
+    from app.models import ContactMessage
+    with app.app_context():
+        count_before = ContactMessage.query.count()
+    response = client.post('/contact', data={
+        'name': '',
+        'email': '',
+        'subject': '',
+        'message': '',
+    })
+    assert response.status_code == 200
+    with app.app_context():
+        assert ContactMessage.query.count() == count_before
