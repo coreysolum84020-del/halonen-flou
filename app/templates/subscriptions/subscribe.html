@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Subscribe{% endblock %}
+{% block meta_description %}Subscribe to HALONEN FLOU professional music services — daily subscription plan.{% endblock %}
+
+{% block content %}
+<div class="page-header" style="text-align:center;">
+  <p class="section-eyebrow" style="text-align:center;margin-bottom:8px;">Get Started</p>
+  <h1 class="page-title" style="text-align:center;">Choose Your Service</h1>
+  <p class="page-subtitle" style="margin:0 auto;">Select a service, fill in your details, and we'll reach out within 24 hours to kick things off.</p>
+</div>
+
+<div class="subscribe-container">
+  <div class="subscribe-card fade-in">
+
+    <p style="font-size:11px;color:var(--primary);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;text-align:center;">Daily Plan · $500/day</p>
+
+    {% if errors.get('service_type') %}
+    <div class="flash-error">{{ errors.service_type }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('subscriptions.subscribe') }}" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <!-- Service selection -->
+      <div class="form-group">
+        <label class="form-label">Select Service</label>
+        <div class="service-select-grid">
+          {% for key, svc in services.items() %}
+          <label class="service-option {% if (form_data.get('service_type') or preselect) == key %}selected{% endif %}">
+            <input type="radio" name="service_type" value="{{ key }}" {% if (form_data.get('service_type') or preselect) == key %}checked{% endif %}>
+            <div class="service-option-icon">{{ svc.emoji }}</div>
+            <div class="service-option-name">{{ svc.name }}</div>
+            <div class="service-option-price">{{ svc.price }}</div>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Custom amount (promotion only) -->
+      <div class="form-group" id="customPriceGroup" style="display:{% if (form_data.get('service_type') or preselect) == 'promotion' %}block{% else %}none{% endif %};">
+        <label class="form-label" for="custom_amount">Your Daily Promotion Budget</label>
+        <div class="price-input-wrapper">
+          <input type="number" id="custom_amount" name="custom_amount" class="form-control" placeholder="e.g. 150" min="1" step="1" value="{{ form_data.get('custom_amount', '') }}">
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Enter the daily amount you'd like to invest in promotion.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="sub_name">Full Name</label>
+        <input type="text" id="sub_name" name="name" class="form-control" placeholder="Your name" value="{{ form_data.get('name', '') }}" required>
+        {% if errors.get('name') %}<div class="form-error">{{ errors.name }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="sub_email">Email Address</label>
+        <input type="email" id="sub_email" name="email" class="form-control" placeholder="your@email.com" value="{{ form_data.get('email', '') }}" required>
+        {% if errors.get('email') %}<div class="form-error">{{ errors.email }}</div>{% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:8px;">Continue to Payment →</button>
+
+      <p style="font-size:11px;color:var(--text-dim);text-align:center;margin-top:14px;">Payment processing coming soon. Your information is saved securely.</p>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+// Show/hide custom amount input based on service selection
+document.querySelectorAll('input[name="service_type"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    var customGroup = document.getElementById('customPriceGroup');
+    customGroup.style.display = this.value === 'promotion' ? 'block' : 'none';
+    // Update selected state on labels
+    document.querySelectorAll('.service-option').forEach(function(label) {
+      label.classList.remove('selected');
+    });
+    this.closest('.service-option').classList.add('selected');
+  });
+});
+</script>
+{% endblock %}
