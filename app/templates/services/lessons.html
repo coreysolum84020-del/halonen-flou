@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Music Lessons{% endblock %}
+{% block meta_description %}Private music lessons — guitar, piano, voice, and music production with professional instructors at HALONEN FLOU.{% endblock %}
+
+{% block content %}
+<div class="service-hero">
+  <p class="section-eyebrow section-eyebrow--left">Service</p>
+  <h1 class="page-title">🎸 Music Lessons</h1>
+  <p class="page-subtitle">Learn from industry professionals. Private sessions tailored to your skill level and goals.</p>
+  <div class="price-badge" style="margin-top:24px;">$100 / Hour</div>
+</div>
+
+<section class="section">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:900px;margin:0 auto;" class="fade-in">
+    <div>
+      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">Instruments &amp; Disciplines</h2>
+      <ul class="includes-list">
+        <li>Electric &amp; Acoustic Guitar</li>
+        <li>Piano &amp; Keyboard</li>
+        <li>Vocal Coaching &amp; Technique</li>
+        <li>Music Production (DAW: Ableton, FL Studio, Logic)</li>
+        <li>Songwriting &amp; Composition</li>
+        <li>Music Theory &amp; Ear Training</li>
+        <li>Bass Guitar</li>
+        <li>Drum Programming &amp; Beatmaking</li>
+      </ul>
+    </div>
+    <div>
+      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">Session Details</h2>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">Sessions are 1-hour private lessons conducted via video call or in-person (New York area). Each session includes a personalized practice plan and lesson notes.</p>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:24px;">All skill levels welcome — from absolute beginners to advanced artists looking to refine specific techniques or add new skills to their repertoire.</p>
+      <a href="{{ url_for('subscriptions.subscribe') }}?service=lessons" class="btn btn-primary">Book a Session →</a>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<section class="section section-alt">
+  <h2 class="section-title">Frequently Asked Questions</h2>
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="faq-item">
+      <div class="faq-question">Do I need my own instrument?</div>
+      <div class="faq-answer">For online sessions, yes — you'll need access to your instrument. For music production lessons, a laptop with a free DAW trial (Ableton, GarageBand, etc.) is sufficient to start.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Are sessions online or in-person?</div>
+      <div class="faq-answer">Both options are available. Online sessions are conducted via Zoom or Google Meet. In-person sessions are available in the New York City area.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">How do I schedule a session?</div>
+      <div class="faq-answer">After subscribing or booking, you'll receive a link to our scheduling system where you can choose available time slots with your assigned instructor.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Can I switch instruments or topics between sessions?</div>
+      <div class="faq-answer">Yes. While we recommend consistency for fastest progress, you're free to explore different disciplines. Just let your instructor know in advance.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

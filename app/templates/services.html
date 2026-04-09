@@ -1,2 +1,51 @@
 {% extends 'base.html' %}
-{% block content %}<h1>Services</h1>{% endblock %}
+{% block title %}Services{% endblock %}
+{% block meta_description %}Professional music promotion, lessons, and artist production services by HALONEN FLOU.{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <p class="section-eyebrow section-eyebrow--left">What We Offer</p>
+  <h1 class="page-title">Our Services</h1>
+  <p class="page-subtitle">Three focused services designed to take artists from where they are to where they want to be.</p>
+</div>
+
+<section class="section">
+  <div class="card-grid card-grid-3 container">
+
+    <div class="card fade-in" style="display:flex;flex-direction:column;">
+      <div class="card-icon">📢</div>
+      <div class="card-title">Artist Promotion</div>
+      <div class="card-body" style="flex:1;">Social media campaigns, playlist pitching, press coverage, PR strategies, and influencer outreach — all tailored to your unique sound and goals.</div>
+      <div class="card-price" style="margin-top:20px;">You set your budget</div>
+      <a href="{{ url_for('services.promotion') }}" class="btn btn-primary" style="margin-top:16px;">Explore Promotion</a>
+    </div>
+
+    <div class="card blue-accent fade-in" style="display:flex;flex-direction:column;">
+      <div class="card-icon">🎸</div>
+      <div class="card-title">Music Lessons</div>
+      <div class="card-body" style="flex:1;">Private sessions in guitar, piano, voice, and music production. Learn from professionals who actively work in the industry, at your own pace.</div>
+      <div class="card-price blue" style="margin-top:20px;">$100 / hour</div>
+      <a href="{{ url_for('services.lessons') }}" class="btn btn-primary" style="margin-top:16px;">Explore Lessons</a>
+    </div>
+
+    <div class="card fade-in" style="display:flex;flex-direction:column;">
+      <div class="card-icon">🎙️</div>
+      <div class="card-title">Artist Production</div>
+      <div class="card-body" style="flex:1;">Full-service production: studio recording, arrangement, mixing, mastering, and artist development. From idea to release-ready track.</div>
+      <div class="card-price" style="margin-top:20px;">$2,500 / project</div>
+      <a href="{{ url_for('services.production') }}" class="btn btn-primary" style="margin-top:16px;">Explore Production</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+<section class="cta-banner">
+  <p class="cta-eyebrow">Daily Subscription</p>
+  <h2 class="cta-title">Start for $500/day</h2>
+  <p class="cta-subtitle">Subscribe to our daily plan and get priority access to all services. Cancel anytime.</p>
+  <div class="cta-actions">
+    <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary btn-lg">Subscribe Now</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Artist Production{% endblock %}
+{% block meta_description %}Full-service artist production — studio recording, mixing, mastering, and artist development by HALONEN FLOU.{% endblock %}
+
+{% block content %}
+<div class="service-hero">
+  <p class="section-eyebrow section-eyebrow--left">Service</p>
+  <h1 class="page-title">🎙️ Artist Production</h1>
+  <p class="page-subtitle">From raw recordings to release-ready tracks. Complete production, mixing, and mastering.</p>
+  <div class="price-badge" style="margin-top:24px;">$2,500 / Project</div>
+</div>
+
+<section class="section">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:900px;margin:0 auto;" class="fade-in">
+    <div>
+      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">What's Included</h2>
+      <ul class="includes-list">
+        <li>Pre-production planning &amp; arrangement</li>
+        <li>Studio recording sessions (up to 3 tracks)</li>
+        <li>Full mixing &amp; mastering</li>
+        <li>Instrument and vocal production</li>
+        <li>Artist development coaching</li>
+        <li>2 rounds of revisions included</li>
+        <li>Final delivery in WAV + MP3 formats</li>
+        <li>Distribution-ready masters</li>
+      </ul>
+    </div>
+    <div>
+      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">Project Scope</h2>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">The $2,500 project fee covers a complete single or EP (up to 3 tracks) from pre-production through final masters. Larger projects (full albums, 4+ tracks) are quoted separately.</p>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:24px;">Timeline: typically 4–6 weeks from kickoff to delivery, depending on project complexity and revision rounds.</p>
+      <a href="{{ url_for('subscriptions.subscribe') }}?service=production" class="btn btn-primary">Start a Project →</a>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<section class="section section-alt">
+  <h2 class="section-title">Frequently Asked Questions</h2>
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="faq-item">
+      <div class="faq-question">What do I need to bring to the project?</div>
+      <div class="faq-answer">Just your ideas and any existing recordings or demos. We'll handle the rest — arrangement, production, session musicians if needed, mixing, and mastering.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">What if I need more than 3 tracks?</div>
+      <div class="faq-answer">For projects exceeding 3 tracks, we provide a custom quote based on scope and complexity. Contact us to discuss your full vision before subscribing.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Do I own the masters?</div>
+      <div class="faq-answer">Yes, 100%. You retain full ownership of all masters and recordings produced under this agreement. We retain no rights to your music.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Can I combine production with promotion services?</div>
+      <div class="faq-answer">Absolutely — and we recommend it. Many clients use our production service to create the music and then activate the promotion package for release. Contact us for combined service pricing.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

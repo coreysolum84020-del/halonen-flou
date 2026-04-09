@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Artist Promotion{% endblock %}
+{% block meta_description %}Professional music artist promotion services — social media, PR, playlist pitching by HALONEN FLOU.{% endblock %}
+
+{% block content %}
+<div class="service-hero">
+  <p class="section-eyebrow section-eyebrow--left">Service</p>
+  <h1 class="page-title">📢 Artist Promotion</h1>
+  <p class="page-subtitle">We amplify your music to the right audience through data-driven promotion strategies.</p>
+  <div class="price-badge" style="margin-top:24px;">You Set Your Budget</div>
+</div>
+
+<section class="section">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:900px;margin:0 auto;" class="fade-in">
+    <div>
+      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">What's Included</h2>
+      <ul class="includes-list">
+        <li>Instagram &amp; TikTok content strategy</li>
+        <li>Spotify playlist pitching (40+ curators)</li>
+        <li>Press release writing &amp; distribution</li>
+        <li>Music blog outreach &amp; features</li>
+        <li>YouTube promotion &amp; channel optimization</li>
+        <li>Influencer &amp; content creator collaboration</li>
+        <li>Monthly analytics report</li>
+        <li>Dedicated account manager</li>
+      </ul>
+    </div>
+    <div>
+      <h2 style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">How Pricing Works</h2>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;">Artist Promotion is fully flexible — you define your budget and we build a campaign around it. The more you invest, the wider the reach.</p>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:24px;">When you subscribe, you'll enter your daily promotion budget. Our team will immediately begin allocating it across the most effective channels for your genre and goals.</p>
+      <a href="{{ url_for('subscriptions.subscribe') }}?service=promotion" class="btn btn-primary">Set My Budget →</a>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<section class="section section-alt">
+  <h2 class="section-title">Frequently Asked Questions</h2>
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="faq-item">
+      <div class="faq-question">What is the minimum budget for promotion?</div>
+      <div class="faq-answer">There is no strict minimum — you decide what you're comfortable investing. However, we recommend at least $50/day to see meaningful results across social and playlist channels within the first month.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">How quickly will I see results?</div>
+      <div class="faq-answer">Most artists see measurable growth within 2–4 weeks. Playlist pitching typically yields results in 3–6 weeks, while social media campaigns can drive engagement within days.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Can I change my budget after subscribing?</div>
+      <div class="faq-answer">Yes, you can adjust your daily budget at any time by contacting us. Changes take effect within 24 hours.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">What genres do you work with?</div>
+      <div class="faq-answer">We work across all genres — R&amp;B, Hip-Hop, Pop, Electronic, Rock, Indie, Country, Latin, and more. Our team includes specialists for each major genre.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Do you guarantee a certain number of streams or followers?</div>
+      <div class="faq-answer">We do not guarantee specific numbers — anyone who does is selling fake engagement. We guarantee professional effort, transparent reporting, and real organic growth strategies.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}
