@@ -20,6 +20,7 @@ def create_app(config_name='default'):
     app.register_blueprint(subscriptions_bp)
 
     with app.app_context():
+        from . import models  # noqa: F401 — ensures tables are created
         db.create_all()
 
     return app
