@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}About{% endblock %}
+{% block meta_description %}Learn about Brent Halonen and the mission behind HALONEN FLOU music company.{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <p class="section-eyebrow" style="text-align:left;margin-bottom:8px;">Our Story</p>
+  <h1 class="page-title">About HALONEN FLOU</h1>
+  <p class="page-subtitle">Built by a musician, for musicians. We understand the journey because we've lived it.</p>
+</div>
+
+<!-- FOUNDER -->
+<section class="section">
+  <div class="about-grid">
+    <div>
+      <div class="about-portrait">👨‍🎤</div>
+    </div>
+    <div>
+      <div class="about-name">Brent Halonen</div>
+      <div class="about-title">Founder &amp; CEO</div>
+      <p class="about-bio">Brent Halonen has spent over a decade at the intersection of music, technology, and marketing. Starting as a session guitarist in New York City, he quickly realized that talent alone wasn't enough — artists needed a strategic partner who understood both the creative and business sides of music.</p>
+      <p class="about-bio" style="margin-top:16px;">He founded HALONEN FLOU with a single mission: to give every artist — regardless of budget or background — access to world-class promotion, education, and production. Today, the company has worked with over 50 artists across genres and continues to grow.</p>
+      <div style="display:flex;gap:16px;margin-top:24px;flex-wrap:wrap;">
+        <a href="mailto:bluealikeu@gmail.com" class="btn btn-primary">Get in Touch</a>
+        <a href="tel:+19295039212" class="btn btn-outline">+1 929 503 9212</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- MISSION -->
+<section class="section section-alt">
+  <p class="section-eyebrow">What Drives Us</p>
+  <h2 class="section-title">Mission &amp; Values</h2>
+  <div class="values-grid">
+    <div class="value-card fade-in">
+      <div class="value-icon">🎯</div>
+      <div class="value-title">Artist First</div>
+      <div class="value-text">Every decision we make starts with one question: does this serve the artist? We build strategies around your unique sound and vision, not cookie-cutter templates.</div>
+    </div>
+    <div class="value-card fade-in">
+      <div class="value-icon">🔥</div>
+      <div class="value-title">Results-Driven</div>
+      <div class="value-text">We measure success by your growth — streams, followers, deals, releases. Our daily subscription model means we're invested in your progress every single day.</div>
+    </div>
+    <div class="value-card fade-in">
+      <div class="value-icon">🤝</div>
+      <div class="value-title">True Partnership</div>
+      <div class="value-text">We don't just deliver a service — we become your team. Transparent communication, honest feedback, and real collaboration at every step of your journey.</div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- TIMELINE -->
+<section class="section">
+  <p class="section-eyebrow blue">Our Journey</p>
+  <h2 class="section-title">How We Got Here</h2>
+  <div class="timeline">
+    <div class="timeline-item fade-in">
+      <div class="timeline-year">2014</div>
+      <div class="timeline-text">Brent Halonen begins his career as a session guitarist and music producer in New York City, working with emerging artists across genres.</div>
+    </div>
+    <div class="timeline-item fade-in">
+      <div class="timeline-year">2017</div>
+      <div class="timeline-text">After managing promotion for 10+ artists independently, Brent formalizes the approach and launches the first version of HALONEN FLOU as a boutique agency.</div>
+    </div>
+    <div class="timeline-item fade-in">
+      <div class="timeline-year">2019</div>
+      <div class="timeline-text">Expansion into music education — structured lesson programs for guitar, piano, voice, and music production added to the service portfolio.</div>
+    </div>
+    <div class="timeline-item fade-in">
+      <div class="timeline-year">2022</div>
+      <div class="timeline-text">Full artist production services launched. First artist signed to a major label after using HALONEN FLOU production and promotion packages.</div>
+    </div>
+    <div class="timeline-item fade-in">
+      <div class="timeline-year">2025</div>
+      <div class="timeline-text">50+ artists served across R&amp;B, Hip-Hop, Electronic, Rock and Pop. Daily subscription model introduced to make professional services accessible to every artist.</div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+<section class="cta-banner">
+  <p class="cta-eyebrow">Work With Us</p>
+  <h2 class="cta-title">Let's Build Something.</h2>
+  <p class="cta-subtitle">Ready to take your music to the next level? Start with a conversation.</p>
+  <div class="cta-actions">
+    <a href="{{ url_for('contact.contact') }}" class="btn btn-primary btn-lg">Contact Brent</a>
+    <a href="{{ url_for('services.overview') }}" class="btn btn-outline btn-lg">View Services</a>
+  </div>
+</section>
+{% endblock %}

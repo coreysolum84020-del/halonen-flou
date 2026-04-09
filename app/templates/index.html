@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content fade-in">
+    <p class="hero-eyebrow">🎵 Music · Production · Promotion</p>
+    <h1 class="hero-title">We Make<br><span class="highlight">Artists Shine.</span></h1>
+    <p class="hero-subtitle">From raw talent to world-class performance — HALONEN FLOU provides everything artists need to grow, learn, and be heard.</p>
+    <div class="hero-actions">
+      <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary btn-lg">Start Today</a>
+      <a href="{{ url_for('main.artists') }}" class="btn btn-outline btn-lg">See Artists →</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-number">50+</div><div class="stat-label">Artists</div></div>
+      <div><div class="stat-number blue">3</div><div class="stat-label">Services</div></div>
+      <div><div class="stat-number">5★</div><div class="stat-label">Rated</div></div>
+      <div><div class="stat-number blue">10y</div><div class="stat-label">Experience</div></div>
+    </div>
+  </div>
+  <div class="sound-bars" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- SERVICES PREVIEW -->
+<section class="section">
+  <p class="section-eyebrow">What We Do</p>
+  <h2 class="section-title">Our Services</h2>
+  <div class="card-grid card-grid-3 container">
+    <div class="card fade-in">
+      <div class="card-icon">📢</div>
+      <div class="card-title">Artist Promotion</div>
+      <div class="card-body">Social media campaigns, playlist pitching, press coverage &amp; PR strategies tailored to your sound.</div>
+      <div class="card-price">Custom budget →</div>
+      <a href="{{ url_for('services.promotion') }}" class="btn btn-outline" style="margin-top:16px;font-size:11px;padding:8px 18px;">Learn More</a>
+    </div>
+    <div class="card blue-accent fade-in">
+      <div class="card-icon">🎸</div>
+      <div class="card-title">Music Lessons</div>
+      <div class="card-body">Guitar, piano, voice, music production. Expert instructors for all skill levels, from beginner to pro.</div>
+      <div class="card-price blue">$100 / hour →</div>
+      <a href="{{ url_for('services.lessons') }}" class="btn btn-outline" style="margin-top:16px;font-size:11px;padding:8px 18px;">Learn More</a>
+    </div>
+    <div class="card fade-in">
+      <div class="card-icon">🎙️</div>
+      <div class="card-title">Artist Production</div>
+      <div class="card-body">Full studio production, mixing, mastering &amp; complete artist development from concept to release.</div>
+      <div class="card-price">$2,500 / project →</div>
+      <a href="{{ url_for('services.production') }}" class="btn btn-outline" style="margin-top:16px;font-size:11px;padding:8px 18px;">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- FEATURED ARTISTS -->
+<section class="section section-alt">
+  <p class="section-eyebrow blue">Success Stories</p>
+  <h2 class="section-title">Featured Artists</h2>
+  <div class="artist-grid">
+    {% for artist in featured_artists %}
+    <div class="artist-card fade-in">
+      <div class="artist-avatar">{{ artist.emoji }}</div>
+      <div class="artist-name">{{ artist.name }}</div>
+      <div class="artist-genre">{{ artist.genre }}</div>
+      <div class="artist-metric {% if artist.metric_color == 'blue' %}blue{% endif %}">{{ artist.metric }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="text-center mt-40">
+    <a href="{{ url_for('main.artists') }}" class="btn btn-outline">View All Artists →</a>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <p class="cta-eyebrow">Daily Subscription</p>
+  <h2 class="cta-title">Ready to Start?</h2>
+  <p class="cta-subtitle">Subscribe today and get access to professional music services. No long-term commitment required.</p>
+  <div class="cta-actions">
+    <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary btn-lg">Get Started Now</a>
+    <a href="{{ url_for('contact.contact') }}" class="btn btn-outline btn-lg">Ask a Question</a>
+  </div>
+</section>
+{% endblock %}

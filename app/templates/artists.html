@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Artists{% endblock %}
+{% block meta_description %}Success stories from artists who grew with HALONEN FLOU — promotion, lessons, and production.{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <p class="section-eyebrow" style="text-align:left;margin-bottom:8px;">Success Stories</p>
+  <h1 class="page-title">Our Artists</h1>
+  <p class="page-subtitle">Real results from real artists. Here's how HALONEN FLOU helped them grow.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    {% for artist in artists %}
+    <div style="background: rgba(138,43,226,0.05); border: 1px solid {% if loop.index is odd %}var(--border){% else %}var(--border-blue){% endif %}; border-radius: 16px; padding: 36px; margin-bottom: 28px; display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: start;" class="fade-in">
+      <div style="text-align:center; min-width: 110px;">
+        <div class="artist-avatar" style="width:80px;height:80px;font-size:36px;margin-bottom:10px;">{{ artist.emoji }}</div>
+        <div class="artist-name" style="font-size:15px;">{{ artist.name }}</div>
+        <div class="artist-genre" style="margin-bottom:8px;">{{ artist.genre }}</div>
+        <div class="artist-metric {% if artist.metric_color == 'blue' %}blue{% endif %}">{{ artist.metric }}</div>
+      </div>
+      <div>
+        <div style="display:inline-block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); background:rgba(138,43,226,0.1); border:1px solid var(--border); border-radius:20px; padding:3px 12px; margin-bottom:14px;">{{ artist.service }}</div>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.8;">{{ artist.story }}</p>
+        <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary" style="margin-top:20px;font-size:11px;padding:9px 22px;">Get Same Results →</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+<section class="cta-banner">
+  <p class="cta-eyebrow">Your Turn</p>
+  <h2 class="cta-title">Write Your Story.</h2>
+  <p class="cta-subtitle">Every artist on this page started exactly where you are now. The only difference is they made the move.</p>
+  <div class="cta-actions">
+    <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary btn-lg">Start Today</a>
+    <a href="{{ url_for('contact.contact') }}" class="btn btn-outline btn-lg">Ask a Question</a>
+  </div>
+</section>
+{% endblock %}
