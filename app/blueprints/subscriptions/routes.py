@@ -28,15 +28,24 @@ def subscribe():
             errors['service_type'] = 'Please select a service.'
 
         if not errors:
+            amount = None
+            if custom_amount:
+                try:
+                    amount = float(custom_amount)
+                    if amount <= 0:
+                        errors['custom_amount'] = 'Budget must be a positive number.'
+                except ValueError:
+                    errors['custom_amount'] = 'Budget must be a valid number.'
+
+        if not errors:
             sub = Subscriber(
                 name=name,
                 email=email,
                 service_type=service_type,
-                custom_amount=float(custom_amount) if custom_amount else None,
+                custom_amount=amount,
             )
             db.session.add(sub)
             db.session.commit()
-            # TODO: redirect to payment provider here (Helcim, Authorize.net, etc.)
             return redirect(url_for('subscriptions.success'))
 
     return render_template('subscriptions/subscribe.html',

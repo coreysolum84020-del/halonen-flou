@@ -2,12 +2,12 @@
 {% block title %}Subscription Cancelled{% endblock %}
 
 {% block content %}
-<section class="section" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
-  <div style="text-align:center;max-width:480px;">
-    <div style="font-size:64px;margin-bottom:24px;">😔</div>
-    <p style="font-size:10px;color:var(--text-muted);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;">Subscription Cancelled</p>
-    <h1 style="font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">No Worries.</h1>
-    <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:32px;">Your subscription was cancelled. Whenever you're ready to start, we'll be here. Have questions? Reach out — we're happy to help you find the right plan.</p>
+<section class="section">
+  <div class="container" style="text-align:center;max-width:480px;margin:0 auto;padding:60px 24px;">
+    <div style="font-size:64px;margin-bottom:24px;" aria-hidden="true">😔</div>
+    <p class="section-eyebrow" style="color:var(--text-muted);margin-bottom:12px;">Subscription Cancelled</p>
+    <h1 class="page-title" style="margin-bottom:16px;">No Worries.</h1>
+    <p class="page-subtitle" style="margin-bottom:32px;">Your subscription was cancelled. Whenever you're ready to start, we'll be here. Have questions? Reach out — we're happy to help you find the right plan.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a href="{{ url_for('subscriptions.subscribe') }}" class="btn btn-primary">Try Again</a>
       <a href="{{ url_for('contact.contact') }}" class="btn btn-outline">Ask a Question</a>

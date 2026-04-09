@@ -72,8 +72,12 @@
 document.querySelectorAll('input[name="service_type"]').forEach(function(radio) {
   radio.addEventListener('change', function() {
     var customGroup = document.getElementById('customPriceGroup');
-    customGroup.style.display = this.value === 'promotion' ? 'block' : 'none';
-    // Update selected state on labels
+    if (this.value === 'promotion') {
+      customGroup.style.display = 'block';
+    } else {
+      customGroup.style.display = 'none';
+      document.getElementById('custom_amount').value = '';
+    }
     document.querySelectorAll('.service-option').forEach(function(label) {
       label.classList.remove('selected');
     });

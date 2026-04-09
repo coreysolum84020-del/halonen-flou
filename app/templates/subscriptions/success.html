@@ -2,12 +2,12 @@
 {% block title %}You're In!{% endblock %}
 
 {% block content %}
-<section class="section" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
-  <div style="text-align:center;max-width:480px;">
-    <div style="font-size:64px;margin-bottom:24px;">🎉</div>
-    <p style="font-size:10px;color:var(--primary);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;">Subscription Confirmed</p>
-    <h1 style="font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">You're In!</h1>
-    <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:32px;">Thank you for choosing HALONEN FLOU. We'll reach out within 24 hours to get everything set up and start working on your music career.</p>
+<section class="section">
+  <div class="container" style="text-align:center;max-width:480px;margin:0 auto;padding:60px 24px;">
+    <div style="font-size:64px;margin-bottom:24px;" aria-hidden="true">🎉</div>
+    <p class="section-eyebrow" style="margin-bottom:12px;">Subscription Confirmed</p>
+    <h1 class="page-title" style="margin-bottom:16px;">You're In!</h1>
+    <p class="page-subtitle" style="margin-bottom:32px;">Thank you for choosing HALONEN FLOU. We'll reach out within 24 hours to get everything set up and start working on your music career.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a href="{{ url_for('main.artists') }}" class="btn btn-outline">See Artist Stories</a>
       <a href="{{ url_for('contact.contact') }}" class="btn btn-primary">Contact Us</a>
