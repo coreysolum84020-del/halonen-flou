@@ -30,6 +30,7 @@ class Subscriber(db.Model):
     custom_amount = db.Column(db.Numeric(10, 2), nullable=True)   # for promotion service — client sets their own budget
     payment_provider = db.Column(db.String(50), nullable=True)    # e.g. helcim, authorize, cashapp, quickbooks, melio, wave
     provider_customer_id = db.Column(db.String(200), nullable=True)  # customer ID returned by payment provider
+    wave_invoice_id = db.Column(db.String(200), nullable=True)   # Wave invoice ID for payment tracking
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     @validates('service_type')

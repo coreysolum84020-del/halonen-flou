@@ -7,6 +7,8 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_ENABLED = True
+    WAVE_API_TOKEN = os.environ.get('WAVE_API_TOKEN', '')
+    WAVE_BUSINESS_ID = os.environ.get('WAVE_BUSINESS_ID', '')
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -24,6 +26,8 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WAVE_API_TOKEN = 'test-wave-token'
+    WAVE_BUSINESS_ID = 'test-wave-business-id'
 
 config = {
     'development': DevelopmentConfig,
