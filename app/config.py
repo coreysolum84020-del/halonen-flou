@@ -9,6 +9,8 @@ class Config:
     WTF_CSRF_ENABLED = True
     WAVE_API_TOKEN = os.environ.get('WAVE_API_TOKEN', '')
     WAVE_BUSINESS_ID = os.environ.get('WAVE_BUSINESS_ID', '')
+    AUTHNET_LOGIN_ID = os.environ.get('AUTHNET_LOGIN_ID', '')
+    AUTHNET_TRANSACTION_KEY = os.environ.get('AUTHNET_TRANSACTION_KEY', '')
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -18,7 +20,6 @@ class ProductionConfig(Config):
     DEBUG = False
     WTF_CSRF_ENABLED = True
     _db_url = os.environ.get('DATABASE_URL', '')
-    # Railway/Heroku provide postgres:// but SQLAlchemy requires postgresql://
     SQLALCHEMY_DATABASE_URI = _db_url.replace('postgres://', 'postgresql://', 1) if _db_url else ''
 
 class TestingConfig(Config):
@@ -28,6 +29,8 @@ class TestingConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WAVE_API_TOKEN = 'test-wave-token'
     WAVE_BUSINESS_ID = 'test-wave-business-id'
+    AUTHNET_LOGIN_ID = 'test-login-id'
+    AUTHNET_TRANSACTION_KEY = 'test-transaction-key'
 
 config = {
     'development': DevelopmentConfig,
