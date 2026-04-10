@@ -23,6 +23,7 @@ def _wave_mock():
     mock.json.side_effect = [
         {'data': {'customerCreate': {'customer': {'id': 'cust_test'}, 'inputErrors': []}}},
         {'data': {'invoiceCreate': {'invoice': {'id': 'inv_test_123', 'viewUrl': 'https://wave.test/checkout'}, 'inputErrors': []}}},
+        {'data': {'invoiceApprove': {'didSucceed': True, 'inputErrors': []}}},
     ]
     return mock
 

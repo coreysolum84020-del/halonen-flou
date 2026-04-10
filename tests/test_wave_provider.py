@@ -2,6 +2,9 @@ from unittest.mock import patch, MagicMock
 import pytest
 
 
+APPROVE_RESP = {'data': {'invoiceApprove': {'didSucceed': True, 'inputErrors': []}}}
+
+
 def _mock_wave_response(*json_payloads):
     """Returns a mock that serves json_payloads in sequence on each .json() call."""
     mock = MagicMock()
@@ -29,7 +32,7 @@ def test_create_invoice_returns_id_and_url(app):
     }
     with app.app_context():
         with patch('app.blueprints.subscriptions.providers.wave.requests.post',
-                   return_value=_mock_wave_response(customer_resp, invoice_resp)):
+                   return_value=_mock_wave_response(customer_resp, invoice_resp, APPROVE_RESP)):
             from app.blueprints.subscriptions.providers.wave import create_invoice
             invoice_id, url = create_invoice('Nova Raines', 'nova@music.com', 'promotion', custom_amount=200)
     assert invoice_id == 'inv_xyz'
@@ -55,7 +58,7 @@ def test_create_invoice_lessons_uses_fixed_price(app):
     }
     with app.app_context():
         with patch('app.blueprints.subscriptions.providers.wave.requests.post',
-                   return_value=_mock_wave_response(customer_resp, invoice_resp)) as mock_post:
+                   return_value=_mock_wave_response(customer_resp, invoice_resp, APPROVE_RESP)) as mock_post:
             from app.blueprints.subscriptions.providers.wave import create_invoice
             create_invoice('DJ Kaleo', 'dj@music.com', 'lessons')
     # Second call is invoiceCreate — check unitPrice is 100.00 (float)

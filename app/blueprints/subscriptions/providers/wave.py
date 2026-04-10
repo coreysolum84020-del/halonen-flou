@@ -102,7 +102,22 @@ def create_invoice(name, email, service_type, custom_amount=None):
         raise RuntimeError(f"Wave invoice error: {errs}")
 
     invoice = invoice_data['invoiceCreate']['invoice']
-    return invoice['id'], invoice['viewUrl']
+    invoice_id = invoice['id']
+
+    # Step 4: Approve the invoice so the payment form appears on the hosted page
+    _gql(
+        """
+        mutation ApproveInvoice($input: InvoiceApproveInput!) {
+            invoiceApprove(input: $input) {
+                didSucceed
+                inputErrors { message }
+            }
+        }
+        """,
+        {'input': {'invoiceId': invoice_id}},
+    )
+
+    return invoice_id, invoice['viewUrl']
 
 
 def handle_webhook(payload):
