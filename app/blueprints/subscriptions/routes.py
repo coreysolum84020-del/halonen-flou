@@ -9,6 +9,7 @@ SERVICES = {
     'production':{'name': 'Artist Production','emoji': '🎙️', 'price': '$2,500',       'daily': False},
 }
 
+
 @subscriptions_bp.route('/', methods=['GET', 'POST'], strict_slashes=False)
 def subscribe():
     errors = {}
@@ -27,26 +28,43 @@ def subscribe():
         if service_type not in SERVICES:
             errors['service_type'] = 'Please select a service.'
 
-        if not errors:
-            amount = None
-            if custom_amount:
-                try:
-                    amount = float(custom_amount)
-                    if amount <= 0:
-                        errors['custom_amount'] = 'Budget must be a positive number.'
-                except ValueError:
-                    errors['custom_amount'] = 'Budget must be a valid number.'
+        amount = None
+        if not errors and custom_amount:
+            try:
+                amount = float(custom_amount)
+                if amount <= 0:
+                    errors['custom_amount'] = 'Budget must be a positive number.'
+            except ValueError:
+                errors['custom_amount'] = 'Budget must be a valid number.'
 
         if not errors:
+            from .providers.wave import create_invoice
+            try:
+                invoice_id, checkout_url = create_invoice(
+                    name=name,
+                    email=email,
+                    service_type=service_type,
+                    custom_amount=amount,
+                )
+            except Exception:
+                flash('Payment service temporarily unavailable. Please try again.', 'error')
+                return render_template('subscriptions/subscribe.html',
+                                       services=SERVICES,
+                                       preselect=preselect,
+                                       errors=errors,
+                                       form_data=request.form)
+
             sub = Subscriber(
                 name=name,
                 email=email,
                 service_type=service_type,
                 custom_amount=amount,
+                payment_provider='wave',
+                wave_invoice_id=invoice_id,
             )
             db.session.add(sub)
             db.session.commit()
-            return redirect(url_for('subscriptions.success'))
+            return redirect(checkout_url)
 
     return render_template('subscriptions/subscribe.html',
                            services=SERVICES,
@@ -54,27 +72,28 @@ def subscribe():
                            errors=errors,
                            form_data=request.form)
 
+
 @subscriptions_bp.route('/success')
 def success():
     return render_template('subscriptions/success.html')
+
 
 @subscriptions_bp.route('/cancel')
 def cancel():
     return render_template('subscriptions/cancel.html')
 
+
 @subscriptions_bp.route('/webhooks/<provider>', methods=['POST'])
 def webhook(provider):
-    """
-    Payment provider webhook handler — stub ready for integration.
-    Supported providers: helcim, authorize, cashapp, quickbooks, melio, wave
-    """
+    """Payment provider webhook handler."""
     allowed = {'helcim', 'authorize', 'cashapp', 'quickbooks', 'melio', 'wave'}
     if provider not in allowed:
         return jsonify({'error': 'Unknown provider'}), 400
 
     payload = request.get_json(silent=True) or {}
-    # TODO: verify webhook signature per provider
-    # TODO: update Subscriber.status based on event type
-    # e.g. payload['event'] == 'payment.success' -> status = 'active'
-    # e.g. payload['event'] == 'subscription.cancelled' -> status = 'cancelled'
+
+    if provider == 'wave':
+        from .providers.wave import handle_webhook
+        handle_webhook(payload)
+
     return jsonify({'received': True, 'provider': provider}), 200
