@@ -1,3 +1,4 @@
+import uuid
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from . import subscriptions_bp
 from app.extensions import db
@@ -20,6 +21,9 @@ def subscribe():
         email = request.form.get('email', '').strip()
         service_type = request.form.get('service_type', '').strip()
         custom_amount = request.form.get('custom_amount', '').strip()
+        payment_method = request.form.get('payment_method', 'wave')
+        if payment_method not in ('wave', 'authorize'):
+            payment_method = 'wave'
 
         if not name:
             errors['name'] = 'Name is required.'
@@ -38,33 +42,62 @@ def subscribe():
                 errors['custom_amount'] = 'Budget must be a valid number.'
 
         if not errors:
-            from .providers.wave import create_invoice
-            try:
-                invoice_id, checkout_url = create_invoice(
+            if payment_method == 'authorize':
+                from .providers.authnet import create_hosted_payment
+                ref_id = str(uuid.uuid4())
+                try:
+                    checkout_url = create_hosted_payment(
+                        name=name,
+                        email=email,
+                        service_type=service_type,
+                        ref_id=ref_id,
+                        custom_amount=amount,
+                    )
+                except Exception:
+                    flash('Payment service temporarily unavailable. Please try again.', 'error')
+                    return render_template('subscriptions/subscribe.html',
+                                           services=SERVICES,
+                                           preselect=preselect,
+                                           errors=errors,
+                                           form_data=request.form)
+                sub = Subscriber(
                     name=name,
                     email=email,
                     service_type=service_type,
                     custom_amount=amount,
+                    payment_provider='authorize',
+                    provider_customer_id=ref_id,
                 )
-            except Exception:
-                flash('Payment service temporarily unavailable. Please try again.', 'error')
-                return render_template('subscriptions/subscribe.html',
-                                       services=SERVICES,
-                                       preselect=preselect,
-                                       errors=errors,
-                                       form_data=request.form)
-
-            sub = Subscriber(
-                name=name,
-                email=email,
-                service_type=service_type,
-                custom_amount=amount,
-                payment_provider='wave',
-                wave_invoice_id=invoice_id,
-            )
-            db.session.add(sub)
-            db.session.commit()
-            return redirect(checkout_url)
+                db.session.add(sub)
+                db.session.commit()
+                return redirect(checkout_url)
+            else:
+                from .providers.wave import create_invoice
+                try:
+                    invoice_id, checkout_url = create_invoice(
+                        name=name,
+                        email=email,
+                        service_type=service_type,
+                        custom_amount=amount,
+                    )
+                except Exception:
+                    flash('Payment service temporarily unavailable. Please try again.', 'error')
+                    return render_template('subscriptions/subscribe.html',
+                                           services=SERVICES,
+                                           preselect=preselect,
+                                           errors=errors,
+                                           form_data=request.form)
+                sub = Subscriber(
+                    name=name,
+                    email=email,
+                    service_type=service_type,
+                    custom_amount=amount,
+                    payment_provider='wave',
+                    wave_invoice_id=invoice_id,
+                )
+                db.session.add(sub)
+                db.session.commit()
+                return redirect(checkout_url)
 
     return render_template('subscriptions/subscribe.html',
                            services=SERVICES,
@@ -90,10 +123,12 @@ def webhook(provider):
     if provider not in allowed:
         return jsonify({'error': 'Unknown provider'}), 400
 
-    payload = request.get_json(silent=True) or {}
-
     if provider == 'wave':
+        payload = request.get_json(silent=True) or {}
         from .providers.wave import handle_webhook
         handle_webhook(payload)
+    elif provider == 'authorize':
+        from .providers.authnet import handle_webhook
+        handle_webhook(request.form.to_dict())
 
     return jsonify({'received': True, 'provider': provider}), 200

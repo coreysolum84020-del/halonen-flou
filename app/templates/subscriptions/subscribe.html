@@ -57,9 +57,26 @@
         {% if errors.get('email') %}<div class="form-error">{{ errors.email }}</div>{% endif %}
       </div>
 
+      <!-- Payment Method -->
+      <div class="form-group" style="margin-top:24px;">
+        <label class="form-label">Payment Method</label>
+        <div style="display:flex;gap:24px;margin-top:8px;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+            <input type="radio" name="payment_method" value="wave"
+              {% if form_data.get('payment_method', 'wave') == 'wave' %}checked{% endif %}>
+            Wave
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+            <input type="radio" name="payment_method" value="authorize"
+              {% if form_data.get('payment_method') == 'authorize' %}checked{% endif %}>
+            Authorize.net
+          </label>
+        </div>
+      </div>
+
       <button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:8px;">Continue to Payment →</button>
 
-      <p style="font-size:11px;color:var(--text-dim);text-align:center;margin-top:14px;">Payment processing coming soon. Your information is saved securely.</p>
+      <p style="font-size:11px;color:var(--text-dim);text-align:center;margin-top:14px;">Your payment is processed securely.</p>
     </form>
   </div>
 </div>
