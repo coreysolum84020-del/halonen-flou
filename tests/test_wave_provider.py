@@ -58,11 +58,10 @@ def test_create_invoice_lessons_uses_fixed_price(app):
                    return_value=_mock_wave_response(customer_resp, invoice_resp)) as mock_post:
             from app.blueprints.subscriptions.providers.wave import create_invoice
             create_invoice('DJ Kaleo', 'dj@music.com', 'lessons')
-    # Second call is invoiceCreate — check unitPrice is '100.00'
+    # Second call is invoiceCreate — check unitPrice is 100.00 (float)
     call_args = mock_post.call_args_list[1]
-    body = call_args.kwargs.get('json') or call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs['json']
-    items = body['variables']['input']['items']
-    assert items[0]['unitPrice'] == '100.00'
+    items = call_args.kwargs['json']['variables']['input']['items']
+    assert items[0]['unitPrice'] == 100.00
 
 
 def test_create_invoice_raises_on_wave_customer_error(app):

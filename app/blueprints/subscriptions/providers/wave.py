@@ -9,9 +9,16 @@ SERVICE_DESCRIPTIONS = {
     'production': 'Artist Production — Full Project',
 }
 
+# Wave product IDs (created once in Wave dashboard / via API)
+SERVICE_PRODUCT_IDS = {
+    'promotion': 'QnVzaW5lc3M6ZmZjMGJiZjEtMjhhZi00ODgyLWIwOTAtYWQyNjg1OGE5ZDFiO1Byb2R1Y3Q6MTMyNzI1NjM1',
+    'lessons':   'QnVzaW5lc3M6ZmZjMGJiZjEtMjhhZi00ODgyLWIwOTAtYWQyNjg1OGE5ZDFiO1Byb2R1Y3Q6MTMyNzI1NjM2',
+    'production':'QnVzaW5lc3M6ZmZjMGJiZjEtMjhhZi00ODgyLWIwOTAtYWQyNjg1OGE5ZDFiO1Byb2R1Y3Q6MTMyNzI1NjM3',
+}
+
 SERVICE_PRICES = {
-    'lessons': '100.00',
-    'production': '2500.00',
+    'lessons': 100.00,
+    'production': 2500.00,
 }
 
 
@@ -45,17 +52,17 @@ def create_invoice(name, email, service_type, custom_amount=None):
     """
     business_id = current_app.config['WAVE_BUSINESS_ID']
 
-    # Step 1: Create customer (Wave returns existing if email matches)
+    # Step 1: Create customer (businessId inside input per current Wave API)
     customer_data = _gql(
         """
-        mutation CreateCustomer($businessId: ID!, $input: CustomerCreateInput!) {
-            customerCreate(businessId: $businessId, input: $input) {
+        mutation CreateCustomer($input: CustomerCreateInput!) {
+            customerCreate(input: $input) {
                 customer { id }
                 inputErrors { message path code }
             }
         }
         """,
-        {'businessId': business_id, 'input': {'name': name, 'email': email}},
+        {'input': {'businessId': business_id, 'name': name, 'email': email}},
     )
     errs = customer_data['customerCreate']['inputErrors']
     if errs:
@@ -64,26 +71,26 @@ def create_invoice(name, email, service_type, custom_amount=None):
 
     # Step 2: Determine unit price
     if service_type == 'promotion':
-        unit_price = f'{float(custom_amount):.2f}'
+        unit_price = float(custom_amount)
     else:
         unit_price = SERVICE_PRICES[service_type]
 
-    # Step 3: Create invoice
+    # Step 3: Create invoice (businessId inside input, productId required per current Wave API)
     invoice_data = _gql(
         """
-        mutation CreateInvoice($businessId: ID!, $input: InvoiceCreateInput!) {
-            invoiceCreate(businessId: $businessId, input: $input) {
+        mutation CreateInvoice($input: InvoiceCreateInput!) {
+            invoiceCreate(input: $input) {
                 invoice { id viewUrl }
                 inputErrors { message path code }
             }
         }
         """,
         {
-            'businessId': business_id,
             'input': {
+                'businessId': business_id,
                 'customerId': customer_id,
                 'items': [{
-                    'description': SERVICE_DESCRIPTIONS[service_type],
+                    'productId': SERVICE_PRODUCT_IDS[service_type],
                     'quantity': '1',
                     'unitPrice': unit_price,
                 }],
