@@ -15,7 +15,9 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     WTF_CSRF_ENABLED = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '')
+    _db_url = os.environ.get('DATABASE_URL', '')
+    # Railway/Heroku provide postgres:// but SQLAlchemy requires postgresql://
+    SQLALCHEMY_DATABASE_URI = _db_url.replace('postgres://', 'postgresql://', 1) if _db_url else ''
 
 class TestingConfig(Config):
     TESTING = True
