@@ -129,6 +129,8 @@ def webhook(provider):
         handle_webhook(payload)
     elif provider == 'authorize':
         from .providers.authnet import handle_webhook
+        # TODO: verify transaction against Authorize.net Transaction Details API
+        # for now, configure IP allowlist in Authorize.net dashboard as mitigation
         handle_webhook(request.form.to_dict())
 
     return jsonify({'received': True, 'provider': provider}), 200

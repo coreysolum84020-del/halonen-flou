@@ -124,7 +124,7 @@ def test_subscribe_authnet_post_saves_subscriber(client, db, app):
         }, follow_redirects=False)
 
     assert response.status_code == 302
-    assert 'accept.authorize.net' in response.headers.get('Location', '')
+    assert 'tok_test' in response.headers.get('Location', '')
 
     with app.app_context():
         from app.models import Subscriber

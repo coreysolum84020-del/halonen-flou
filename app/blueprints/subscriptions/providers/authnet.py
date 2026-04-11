@@ -1,11 +1,9 @@
 import json
 import requests
-from flask import current_app
+from flask import current_app, url_for
 
 AUTHNET_API_URL = 'https://api.authorize.net/xml/v1/request.api'
 HOSTED_PAYMENT_URL = 'https://accept.authorize.net/payment/payment'
-SUCCESS_URL = 'https://web-production-f4c2c.up.railway.app/subscribe/success'
-CANCEL_URL = 'https://web-production-f4c2c.up.railway.app/subscribe/cancel'
 
 SERVICE_PRICES = {
     'lessons': 100.00,
@@ -29,7 +27,13 @@ def create_hosted_payment(name, email, service_type, ref_id, custom_amount=None)
     if service_type == 'promotion':
         amount = f'{float(custom_amount):.2f}'
     else:
-        amount = f'{SERVICE_PRICES[service_type]:.2f}'
+        price = SERVICE_PRICES.get(service_type)
+        if price is None:
+            raise RuntimeError(f'Unknown service_type: {service_type}')
+        amount = f'{price:.2f}'
+
+    success_url = url_for('subscriptions.success', _external=True)
+    cancel_url = url_for('subscriptions.cancel', _external=True)
 
     payload = {
         'getHostedPaymentPageRequest': {
@@ -49,8 +53,8 @@ def create_hosted_payment(name, email, service_type, ref_id, custom_amount=None)
                     {
                         'settingName': 'hostedPaymentReturnOptions',
                         'settingValue': json.dumps({
-                            'url': SUCCESS_URL,
-                            'cancelUrl': CANCEL_URL,
+                            'url': success_url,
+                            'cancelUrl': cancel_url,
                             'showReceipt': True,
                         }),
                     },
