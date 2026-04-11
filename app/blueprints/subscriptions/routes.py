@@ -45,7 +45,7 @@ def subscribe():
         if not errors:
             if payment_method == 'authorize':
                 from .providers.authnet import create_hosted_payment
-                ref_id = str(uuid.uuid4())
+                ref_id = uuid.uuid4().hex[:20]
                 try:
                     checkout_url = create_hosted_payment(
                         name=name,
