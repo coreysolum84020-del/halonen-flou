@@ -1,5 +1,6 @@
 import uuid
-from flask import render_template, request, redirect, url_for, flash, jsonify
+import traceback
+from flask import render_template, request, redirect, url_for, flash, jsonify, current_app
 from . import subscriptions_bp
 from app.extensions import db, csrf
 from app.models import Subscriber
@@ -53,7 +54,8 @@ def subscribe():
                         ref_id=ref_id,
                         custom_amount=amount,
                     )
-                except Exception:
+                except Exception as e:
+                    current_app.logger.error('Authorize.net create_hosted_payment failed: %s\n%s', e, traceback.format_exc())
                     flash('Payment service temporarily unavailable. Please try again.', 'error')
                     return render_template('subscriptions/subscribe.html',
                                            services=SERVICES,
