@@ -47,7 +47,7 @@ def subscribe():
                 from .providers.authnet import create_hosted_payment
                 ref_id = uuid.uuid4().hex[:20]
                 try:
-                    checkout_url = create_hosted_payment(
+                    token = create_hosted_payment(
                         name=name,
                         email=email,
                         service_type=service_type,
@@ -72,7 +72,7 @@ def subscribe():
                 )
                 db.session.add(sub)
                 db.session.commit()
-                return redirect(checkout_url)
+                return render_template('subscriptions/authnet_redirect.html', token=token)
             else:
                 from .providers.wave import create_invoice
                 try:

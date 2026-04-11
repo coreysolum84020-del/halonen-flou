@@ -84,7 +84,7 @@ def create_hosted_payment(name, email, service_type, ref_id, custom_amount=None)
         raise RuntimeError(f'Authorize.net error: {messages}')
 
     token = data['token']
-    return f'{HOSTED_PAYMENT_URL}?token={token}'
+    return token
 
 
 def handle_webhook(form_data):

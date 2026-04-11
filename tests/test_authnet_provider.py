@@ -12,13 +12,13 @@ def _mock_authnet_ok(token='test_token_abc'):
     return mock
 
 
-def test_create_hosted_payment_returns_url(app):
+def test_create_hosted_payment_returns_token(app):
     with app.app_context():
         with patch('app.blueprints.subscriptions.providers.authnet.requests.post',
                    return_value=_mock_authnet_ok('tok_xyz')):
             from app.blueprints.subscriptions.providers.authnet import create_hosted_payment
-            url = create_hosted_payment('Nova Raines', 'nova@music.com', 'lessons', 'ref_001')
-    assert url == 'https://accept.authorize.net/payment/payment?token=tok_xyz'
+            token = create_hosted_payment('Nova Raines', 'nova@music.com', 'lessons', 'ref_001')
+    assert token == 'tok_xyz'
 
 
 def test_create_hosted_payment_lessons_uses_100(app):

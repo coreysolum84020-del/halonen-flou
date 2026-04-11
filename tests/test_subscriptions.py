@@ -123,8 +123,8 @@ def test_subscribe_authnet_post_saves_subscriber(client, db, app):
             'payment_method': 'authorize',
         }, follow_redirects=False)
 
-    assert response.status_code == 302
-    assert 'tok_test' in response.headers.get('Location', '')
+    assert response.status_code == 200
+    assert b'tok_test' in response.data
 
     with app.app_context():
         from app.models import Subscriber
