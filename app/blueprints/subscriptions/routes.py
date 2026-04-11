@@ -1,7 +1,7 @@
 import uuid
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from . import subscriptions_bp
-from app.extensions import db
+from app.extensions import db, csrf
 from app.models import Subscriber
 
 SERVICES = {
@@ -117,6 +117,7 @@ def cancel():
 
 
 @subscriptions_bp.route('/webhooks/<provider>', methods=['POST'])
+@csrf.exempt
 def webhook(provider):
     """Payment provider webhook handler."""
     allowed = {'helcim', 'authorize', 'cashapp', 'quickbooks', 'melio', 'wave'}
