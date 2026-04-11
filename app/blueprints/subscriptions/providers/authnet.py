@@ -44,7 +44,7 @@ def create_hosted_payment(name, email, service_type, ref_id, custom_amount=None)
             'transactionRequest': {
                 'transactionType': 'authCaptureTransaction',
                 'amount': amount,
-                'invoiceNum': ref_id,
+                'order': {'invoiceNumber': ref_id},
                 'customer': {'email': email},
                 'billTo': {'firstName': name},
             },
@@ -76,6 +76,7 @@ def create_hosted_payment(name, email, service_type, ref_id, custom_amount=None)
 
     resp = requests.post(AUTHNET_API_URL, json=payload, timeout=10)
     resp.raise_for_status()
+    resp.encoding = 'utf-8-sig'  # Authorize.net returns UTF-8 BOM
     data = resp.json()
 
     if data.get('messages', {}).get('resultCode') != 'Ok':
