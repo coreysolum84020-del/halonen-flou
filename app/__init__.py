@@ -13,11 +13,13 @@ def create_app(config_name='default'):
     from .blueprints.services import services_bp
     from .blueprints.contact import contact_bp
     from .blueprints.subscriptions import subscriptions_bp
+    from .blueprints.setup import setup_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(services_bp)
     app.register_blueprint(contact_bp)
     app.register_blueprint(subscriptions_bp)
+    app.register_blueprint(setup_bp)
 
     from datetime import datetime
 
