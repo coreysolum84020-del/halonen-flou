@@ -111,3 +111,41 @@ def test_get_access_token_refreshes_when_expired(app, db):
             from app.blueprints.subscriptions.providers.qbp import get_access_token
             token = get_access_token()
     assert token == 'new_access_token'
+
+
+def test_charge_card_promotion_uses_custom_amount(app, db):
+    _seed_tokens(app, db)
+    with app.app_context():
+        with patch('app.blueprints.subscriptions.providers.qbp.requests.post',
+                   return_value=_mock_charge_ok('ch_promo_001')) as mock_post:
+            from app.blueprints.subscriptions.providers.qbp import charge_card
+            charge_id = charge_card(
+                name='Artist Name',
+                email='artist@music.com',
+                service_type='promotion',
+                amount=250.0,
+                card_number='4111111111111111',
+                exp_month='12',
+                exp_year='2030',
+                cvc='123',
+            )
+    assert charge_id == 'ch_promo_001'
+    body = mock_post.call_args.kwargs['json']
+    assert body['amount'] == '250.00'
+
+
+def test_charge_card_promotion_raises_below_minimum(app, db):
+    _seed_tokens(app, db)
+    with app.app_context():
+        from app.blueprints.subscriptions.providers.qbp import charge_card
+        with pytest.raises(RuntimeError, match='at least'):
+            charge_card(
+                name='Test',
+                email='t@t.com',
+                service_type='promotion',
+                amount=0.50,
+                card_number='4111111111111111',
+                exp_month='12',
+                exp_year='2030',
+                cvc='123',
+            )

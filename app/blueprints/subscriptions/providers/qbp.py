@@ -49,14 +49,17 @@ def get_access_token():
     client_id = current_app.config['QBP_CLIENT_ID']
     client_secret = current_app.config['QBP_CLIENT_SECRET']
 
-    resp = requests.post(
-        QBP_TOKEN_URL,
-        data={'grant_type': 'refresh_token', 'refresh_token': refresh_row.value},
-        auth=(client_id, client_secret),
-        headers={'Accept': 'application/json'},
-        timeout=10,
-    )
-    resp.raise_for_status()
+    try:
+        resp = requests.post(
+            QBP_TOKEN_URL,
+            data={'grant_type': 'refresh_token', 'refresh_token': refresh_row.value},
+            auth=(client_id, client_secret),
+            headers={'Accept': 'application/json'},
+            timeout=10,
+        )
+        resp.raise_for_status()
+    except requests.RequestException as exc:
+        raise RuntimeError(f'QuickBooks Payments API error: {exc}') from exc
     data = resp.json()
 
     _save_config('qbp_access_token', data['access_token'])
@@ -73,6 +76,7 @@ def charge_card(name, email, service_type, amount, card_number, exp_month, exp_y
 
     Args:
         amount: float or None. Used only for 'promotion' service_type.
+        email: Accepted for provider interface consistency; not forwarded to QBP API.
 
     Returns:
         str: charge ID on success.
@@ -81,7 +85,10 @@ def charge_card(name, email, service_type, amount, card_number, exp_month, exp_y
         RuntimeError: if charge is declined, API returns error, or tokens missing.
     """
     if service_type == 'promotion':
-        amt = float(amount) if amount is not None else 0.0
+        try:
+            amt = float(amount) if amount is not None else 0.0
+        except (TypeError, ValueError):
+            raise RuntimeError('Invalid promotion amount')
         if amt < 1.0:
             raise RuntimeError('Promotion amount must be at least $1.00')
         charge_amount = f'{amt:.2f}'
@@ -110,17 +117,20 @@ def charge_card(name, email, service_type, amount, card_number, exp_month, exp_y
         },
     }
 
-    resp = requests.post(
-        QBP_CHARGES_URL,
-        json=payload,
-        headers={
-            'Authorization': f'Bearer {access_token}',
-            'Content-Type': 'application/json',
-            'Request-Id': str(uuid.uuid4()),
-        },
-        timeout=15,
-    )
-    resp.raise_for_status()
+    try:
+        resp = requests.post(
+            QBP_CHARGES_URL,
+            json=payload,
+            headers={
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json',
+                'Request-Id': str(uuid.uuid4()),
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+    except requests.RequestException as exc:
+        raise RuntimeError(f'QuickBooks Payments API error: {exc}') from exc
     data = resp.json()
 
     if data.get('status') != 'CAPTURED':
