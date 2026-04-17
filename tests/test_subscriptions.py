@@ -63,13 +63,13 @@ def test_cancel_page_returns_200(client):
     assert response.status_code == 200
 
 def test_webhook_endpoint_exists(client):
-    response = client.post('/subscribe/webhooks/helcim',
-                           json={'event': 'payment.success'},
+    response = client.post('/subscribe/webhooks/wave',
+                           json={'data': {'invoice': {'id': 'inv_x', 'status': 'DRAFT'}}},
                            content_type='application/json')
     assert response.status_code == 200
     data = response.get_json()
     assert data['received'] is True
-    assert data['provider'] == 'helcim'
+    assert data['provider'] == 'wave'
 
 def test_subscribe_post_wave_failure_shows_error(client):
     from unittest.mock import patch
@@ -103,53 +103,46 @@ def test_webhook_wave_marks_subscriber_active(client, db, app):
         assert updated.status == 'active'
 
 
-def test_subscribe_authnet_post_saves_subscriber(client, db, app):
+def test_subscribe_qbp_post_saves_active_subscriber(client, db, app):
     from unittest.mock import patch, MagicMock
+    import time
+
+    # Seed QBP tokens so get_access_token() succeeds
+    with app.app_context():
+        from app.models import AppConfig, Subscriber
+        from app.extensions import db as _db
+        for key, value in [
+            ('qbp_access_token', 'tok_test'),
+            ('qbp_refresh_token', 'ref_test'),
+            ('qbp_token_expiry', str(time.time() + 3600)),
+        ]:
+            _db.session.merge(AppConfig(key=key, value=value))
+        Subscriber.query.delete()
+        _db.session.commit()
+
     mock = MagicMock()
     mock.raise_for_status.return_value = None
-    mock.json.return_value = {'token': 'tok_test', 'messages': {'resultCode': 'Ok'}}
+    mock.json.return_value = {'id': 'ch_qbp_001', 'status': 'CAPTURED'}
 
-    with app.app_context():
-        from app.models import Subscriber
-        Subscriber.query.delete()
-        db.session.commit()
-
-    with patch('app.blueprints.subscriptions.providers.authnet.requests.post',
-               return_value=mock):
+    with patch('app.blueprints.subscriptions.providers.qbp.requests.post', return_value=mock):
         response = client.post('/subscribe', data={
-            'name': 'Auth User',
-            'email': 'auth@music.com',
+            'name': 'QBP User',
+            'email': 'qbp@music.com',
             'service_type': 'lessons',
-            'payment_method': 'authorize',
+            'payment_method': 'quickbooks',
+            'card_number': '4111111111111111',
+            'card_exp_month': '12',
+            'card_exp_year': '2030',
+            'card_cvc': '123',
         }, follow_redirects=False)
 
-    assert response.status_code == 200
-    assert b'tok_test' in response.data
+    assert response.status_code == 302
+    assert '/subscribe/success' in response.headers.get('Location', '')
 
     with app.app_context():
         from app.models import Subscriber
         sub = Subscriber.query.first()
         assert sub is not None
-        assert sub.payment_provider == 'authorize'
-        assert sub.provider_customer_id is not None
-        assert sub.status == 'pending'
-
-
-def test_webhook_authnet_marks_subscriber_active(client, db, app):
-    from app.models import Subscriber
-    with app.app_context():
-        sub = Subscriber(name='Auth Webhook', email='authwh@test.com',
-                         service_type='lessons', payment_provider='authorize',
-                         provider_customer_id='ref_auth_wh_001')
-        db.session.add(sub)
-        db.session.commit()
-
-    response = client.post('/subscribe/webhooks/authorize',
-                           data={'x_response_code': '1',
-                                 'x_invoice_num': 'ref_auth_wh_001'},
-                           content_type='application/x-www-form-urlencoded')
-    assert response.status_code == 200
-
-    with app.app_context():
-        updated = Subscriber.query.filter_by(provider_customer_id='ref_auth_wh_001').first()
-        assert updated.status == 'active'
+        assert sub.payment_provider == 'quickbooks'
+        assert sub.provider_customer_id == 'ch_qbp_001'
+        assert sub.status == 'active'

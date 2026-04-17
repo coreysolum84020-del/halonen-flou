@@ -1,4 +1,3 @@
-import uuid
 import traceback
 from flask import render_template, request, redirect, url_for, flash, jsonify, current_app
 from . import subscriptions_bp
@@ -23,7 +22,7 @@ def subscribe():
         service_type = request.form.get('service_type', '').strip()
         custom_amount = request.form.get('custom_amount', '').strip()
         payment_method = request.form.get('payment_method', 'wave')
-        if payment_method not in ('wave', 'authorize'):
+        if payment_method not in ('wave', 'quickbooks'):
             payment_method = 'wave'
 
         if not name:
@@ -43,36 +42,51 @@ def subscribe():
                 errors['custom_amount'] = 'Budget must be a valid number.'
 
         if not errors:
-            if payment_method == 'authorize':
-                from .providers.authnet import create_hosted_payment
-                ref_id = uuid.uuid4().hex[:20]
-                try:
-                    token = create_hosted_payment(
+            if payment_method == 'quickbooks':
+                card_number = request.form.get('card_number', '').strip()
+                exp_month = request.form.get('card_exp_month', '').strip()
+                exp_year = request.form.get('card_exp_year', '').strip()
+                cvc = request.form.get('card_cvc', '').strip()
+
+                if not card_number or not exp_month or not exp_year or not cvc:
+                    errors['card'] = 'All card fields are required.'
+                else:
+                    from .providers.qbp import charge_card
+                    try:
+                        charge_id = charge_card(
+                            name=name,
+                            email=email,
+                            service_type=service_type,
+                            amount=amount,
+                            card_number=card_number,
+                            exp_month=exp_month,
+                            exp_year=exp_year,
+                            cvc=cvc,
+                        )
+                    except RuntimeError as e:
+                        msg = str(e)
+                        if 'declined' in msg.lower():
+                            flash('Your card was declined. Please try a different card.', 'error')
+                        else:
+                            current_app.logger.error('QBP charge_card failed: %s\n%s', e, traceback.format_exc())
+                            flash('Payment service temporarily unavailable. Please try again.', 'error')
+                        return render_template('subscriptions/subscribe.html',
+                                               services=SERVICES,
+                                               preselect=preselect,
+                                               errors=errors,
+                                               form_data=request.form)
+                    sub = Subscriber(
                         name=name,
                         email=email,
                         service_type=service_type,
-                        ref_id=ref_id,
                         custom_amount=amount,
+                        payment_provider='quickbooks',
+                        provider_customer_id=charge_id,
+                        status='active',
                     )
-                except Exception as e:
-                    current_app.logger.error('Authorize.net create_hosted_payment failed: %s\n%s', e, traceback.format_exc())
-                    flash('Payment service temporarily unavailable. Please try again.', 'error')
-                    return render_template('subscriptions/subscribe.html',
-                                           services=SERVICES,
-                                           preselect=preselect,
-                                           errors=errors,
-                                           form_data=request.form)
-                sub = Subscriber(
-                    name=name,
-                    email=email,
-                    service_type=service_type,
-                    custom_amount=amount,
-                    payment_provider='authorize',
-                    provider_customer_id=ref_id,
-                )
-                db.session.add(sub)
-                db.session.commit()
-                return render_template('subscriptions/authnet_redirect.html', token=token)
+                    db.session.add(sub)
+                    db.session.commit()
+                    return redirect(url_for('subscriptions.success'))
             else:
                 from .providers.wave import create_invoice
                 try:
@@ -101,6 +115,13 @@ def subscribe():
                 db.session.commit()
                 return redirect(checkout_url)
 
+        if errors:
+            return render_template('subscriptions/subscribe.html',
+                                   services=SERVICES,
+                                   preselect=preselect,
+                                   errors=errors,
+                                   form_data=request.form)
+
     return render_template('subscriptions/subscribe.html',
                            services=SERVICES,
                            preselect=preselect,
@@ -122,7 +143,7 @@ def cancel():
 @csrf.exempt
 def webhook(provider):
     """Payment provider webhook handler."""
-    allowed = {'helcim', 'authorize', 'cashapp', 'quickbooks', 'melio', 'wave'}
+    allowed = {'wave'}
     if provider not in allowed:
         return jsonify({'error': 'Unknown provider'}), 400
 
@@ -130,10 +151,5 @@ def webhook(provider):
         payload = request.get_json(silent=True) or {}
         from .providers.wave import handle_webhook
         handle_webhook(payload)
-    elif provider == 'authorize':
-        from .providers.authnet import handle_webhook
-        # TODO: verify transaction against Authorize.net Transaction Details API
-        # for now, configure IP allowlist in Authorize.net dashboard as mitigation
-        handle_webhook(request.form.to_dict())
 
     return jsonify({'received': True, 'provider': provider}), 200

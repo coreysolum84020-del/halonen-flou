@@ -18,7 +18,7 @@
     <div class="flash-error">{{ errors.service_type }}</div>
     {% endif %}
 
-    <form method="POST" action="{{ url_for('subscriptions.subscribe') }}" novalidate>
+    <form method="POST" action="{{ url_for('subscriptions.subscribe') }}" novalidate id="subscribe-form">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <!-- Service selection -->
@@ -62,15 +62,48 @@
         <label class="form-label">Payment Method</label>
         <div style="display:flex;gap:24px;margin-top:8px;">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
-            <input type="radio" name="payment_method" value="wave"
+            <input type="radio" name="payment_method" value="wave" id="pm_wave"
               {% if form_data.get('payment_method', 'wave') == 'wave' %}checked{% endif %}>
             Wave
           </label>
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
-            <input type="radio" name="payment_method" value="authorize"
-              {% if form_data.get('payment_method') == 'authorize' %}checked{% endif %}>
-            Authorize.net
+            <input type="radio" name="payment_method" value="quickbooks" id="pm_qbp"
+              {% if form_data.get('payment_method') == 'quickbooks' %}checked{% endif %}>
+            QuickBooks Payments
           </label>
+        </div>
+      </div>
+
+      <!-- Card fields (QuickBooks Payments only) -->
+      <div id="qbp-card-form" style="display:{% if form_data.get('payment_method') == 'quickbooks' %}block{% else %}none{% endif %};">
+        {% if errors.get('card') %}
+        <div class="form-error" style="margin-bottom:8px;">{{ errors.card }}</div>
+        {% endif %}
+        <div class="form-group" style="margin-top:16px;">
+          <label class="form-label" for="card_number">Card Number</label>
+          <input type="text" id="card_number" name="card_number" class="form-control"
+            placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number"
+            value="{{ form_data.get('card_number', '') }}">
+        </div>
+        <div style="display:flex;gap:12px;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label" for="card_exp_month">Month</label>
+            <input type="text" id="card_exp_month" name="card_exp_month" class="form-control"
+              placeholder="MM" maxlength="2" autocomplete="cc-exp-month"
+              value="{{ form_data.get('card_exp_month', '') }}">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label" for="card_exp_year">Year</label>
+            <input type="text" id="card_exp_year" name="card_exp_year" class="form-control"
+              placeholder="YYYY" maxlength="4" autocomplete="cc-exp-year"
+              value="{{ form_data.get('card_exp_year', '') }}">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label" for="card_cvc">CVC</label>
+            <input type="text" id="card_cvc" name="card_cvc" class="form-control"
+              placeholder="123" maxlength="4" autocomplete="cc-csc"
+              value="{{ form_data.get('card_cvc', '') }}">
+          </div>
         </div>
       </div>
 
@@ -89,16 +122,22 @@
 document.querySelectorAll('input[name="service_type"]').forEach(function(radio) {
   radio.addEventListener('change', function() {
     var customGroup = document.getElementById('customPriceGroup');
-    if (this.value === 'promotion') {
-      customGroup.style.display = 'block';
-    } else {
-      customGroup.style.display = 'none';
+    customGroup.style.display = this.value === 'promotion' ? 'block' : 'none';
+    if (this.value !== 'promotion') {
       document.getElementById('custom_amount').value = '';
     }
     document.querySelectorAll('.service-option').forEach(function(label) {
       label.classList.remove('selected');
     });
     this.closest('.service-option').classList.add('selected');
+  });
+});
+
+// Show/hide card form based on payment method
+document.querySelectorAll('input[name="payment_method"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    document.getElementById('qbp-card-form').style.display =
+      this.value === 'quickbooks' ? 'block' : 'none';
   });
 });
 </script>
