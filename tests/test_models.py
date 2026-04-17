@@ -42,3 +42,11 @@ def test_subscriber_service_type_validation(app):
                 name='Test Artist',
                 service_type='invalid_type',
             )
+
+def test_app_config_stores_value(app, db):
+    from app.models import AppConfig
+    with app.app_context():
+        db.session.add(AppConfig(key='test_key', value='test_value'))
+        db.session.commit()
+        row = AppConfig.query.get('test_key')
+        assert row.value == 'test_value'

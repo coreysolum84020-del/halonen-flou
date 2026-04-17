@@ -41,3 +41,11 @@ class Subscriber(db.Model):
 
     def __repr__(self):
         return f'<Subscriber {self.name} ({self.service_type})>'
+
+class AppConfig(db.Model):
+    __tablename__ = 'app_config'
+    key = db.Column(db.String(100), primary_key=True)
+    value = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return f'<AppConfig {self.key}>'

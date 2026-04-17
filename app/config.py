@@ -11,6 +11,8 @@ class Config:
     WAVE_BUSINESS_ID = os.environ.get('WAVE_BUSINESS_ID', '')
     AUTHNET_LOGIN_ID = os.environ.get('AUTHNET_LOGIN_ID', '')
     AUTHNET_TRANSACTION_KEY = os.environ.get('AUTHNET_TRANSACTION_KEY', '')
+    QBP_CLIENT_ID = os.environ.get('QBP_CLIENT_ID', '')
+    QBP_CLIENT_SECRET = os.environ.get('QBP_CLIENT_SECRET', '')
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -31,6 +33,8 @@ class TestingConfig(Config):
     WAVE_BUSINESS_ID = 'test-wave-business-id'
     AUTHNET_LOGIN_ID = 'test-login-id'
     AUTHNET_TRANSACTION_KEY = 'test-transaction-key'
+    QBP_CLIENT_ID = 'test-qbp-client-id'
+    QBP_CLIENT_SECRET = 'test-qbp-client-secret'
 
 config = {
     'development': DevelopmentConfig,
