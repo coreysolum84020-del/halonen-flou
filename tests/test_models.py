@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from app.models import ContactMessage, Subscriber
+from app.models import ContactMessage, Subscriber, AppConfig
 
 def test_contact_message_creation(db, app):
     with app.app_context():
@@ -44,9 +44,8 @@ def test_subscriber_service_type_validation(app):
             )
 
 def test_app_config_stores_value(app, db):
-    from app.models import AppConfig
     with app.app_context():
         db.session.add(AppConfig(key='test_key', value='test_value'))
         db.session.commit()
-        row = AppConfig.query.get('test_key')
+        row = db.session.get(AppConfig, 'test_key')
         assert row.value == 'test_value'

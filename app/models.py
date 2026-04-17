@@ -45,7 +45,7 @@ class Subscriber(db.Model):
 class AppConfig(db.Model):
     __tablename__ = 'app_config'
     key = db.Column(db.String(100), primary_key=True)
-    value = db.Column(db.Text, nullable=True)
+    value = db.Column(db.Text, nullable=True)   # nullable: allows clearing a config entry
 
     def __repr__(self):
         return f'<AppConfig {self.key}>'
