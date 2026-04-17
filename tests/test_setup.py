@@ -18,8 +18,12 @@ def test_qbp_callback_saves_tokens(client, app, db):
         'expires_in': 3600,
     }
 
+    # Pre-populate session with expected state
+    with client.session_transaction() as sess:
+        sess['qbp_oauth_state'] = 'test_state_123'
+
     with patch('app.blueprints.setup.routes.requests.post', return_value=mock):
-        response = client.get('/setup/qbp/callback?code=auth_code_abc&state=x')
+        response = client.get('/setup/qbp/callback?code=auth_code_abc&state=test_state_123')
 
     assert response.status_code == 200
     assert b'complete' in response.data.lower()
