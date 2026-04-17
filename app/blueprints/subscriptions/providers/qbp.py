@@ -81,7 +81,10 @@ def charge_card(name, email, service_type, amount, card_number, exp_month, exp_y
         RuntimeError: if charge is declined, API returns error, or tokens missing.
     """
     if service_type == 'promotion':
-        charge_amount = f'{float(amount):.2f}'
+        amt = float(amount) if amount is not None else 0.0
+        if amt < 1.0:
+            raise RuntimeError('Promotion amount must be at least $1.00')
+        charge_amount = f'{amt:.2f}'
     else:
         price = SERVICE_PRICES.get(service_type)
         if price is None:
