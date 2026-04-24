@@ -55,6 +55,16 @@
       </a>
     </div>
 
+    <!-- What happens next -->
+    <div id="what-next" style="display:none;margin-top:24px;padding:16px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);">
+      <p style="font-size:13px;font-weight:700;margin-bottom:8px;">What happens after payment:</p>
+      <ol style="font-size:13px;color:var(--text-dim);line-height:2;padding-left:20px;margin:0;">
+        <li>QuickBooks sends you a payment receipt by email</li>
+        <li>We contact you within <strong>24 hours</strong> to confirm your booking</li>
+        <li>We schedule your session or kick off your campaign</li>
+      </ol>
+    </div>
+
     <p style="font-size:11px;color:var(--text-dim);text-align:center;margin-top:20px;">
       Payment is processed securely through QuickBooks Payments.<br>
       By paying you agree to our
@@ -83,6 +93,8 @@ function selectService(key) {
     section.style.display = 'block';
     section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
+
+  document.getElementById('what-next').style.display = 'block';
 }
 </script>
 {% endblock %}
