@@ -1,132 +1,26 @@
-import traceback
-from flask import render_template, request, redirect, url_for, flash, jsonify, current_app
+from flask import render_template, jsonify
 from . import subscriptions_bp
-from app.extensions import db, csrf
-from app.models import Subscriber
+from app.extensions import csrf
 
 SERVICES = {
-    'promotion': {'name': 'Artist Promotion', 'emoji': '📢', 'price': 'Your budget', 'daily': True},
-    'lessons':   {'name': 'Music Lessons',    'emoji': '🎸', 'price': '$100/hour',    'daily': False},
-    'production':{'name': 'Artist Production','emoji': '🎙️', 'price': '$2,500',       'daily': False},
+    'lessons':    {'name': 'Music Lessons',    'emoji': '🎸', 'price': '$150 – $250'},
+    'promotion':  {'name': 'Artist Promotion', 'emoji': '📢', 'price': '$400'},
+    'production': {'name': 'Artist Production','emoji': '🎙️', 'price': '$650'},
+}
+
+QBP_LINKS = {
+    'production': 'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-79a25230f28349379adc6ef8ad8e7dae6812a5a814ef43e7a16aefc06f8cec0544ab77f2161a484d8b9eb2f971c605cc?locale=EN_US&cta=paylinkbuybutton',
+    'promotion':  'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-4c41727a06e34628b6c7ca55c2afa5beeb2f5d27fda749338b4e52ef7e30fbf1d4a0a4e7b07e48a9a1a34d90cc3df56c?locale=EN_US&cta=paylinkbuybutton',
+    'lessons_250':'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-ff2da355b23d4749868e8743fff7cc107c6aee2488ff46eaade4ea5411cfd19de6f39c554f2d44d9b8adb2e240582322?locale=EN_US&cta=paylinkbuybutton',
+    'lessons_150':'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-d29e72474d794c7b84d581d4625175cb4c1d8300e6884a4683d7f7a78f52ceabd5f364502f224d1986e0b0414a1a1788?locale=EN_US&cta=paylinkbuybutton',
 }
 
 
-@subscriptions_bp.route('/', methods=['GET', 'POST'], strict_slashes=False)
+@subscriptions_bp.route('/', strict_slashes=False)
 def subscribe():
-    errors = {}
-    preselect = request.args.get('service', '')
-
-    if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip()
-        service_type = request.form.get('service_type', '').strip()
-        custom_amount = request.form.get('custom_amount', '').strip()
-        payment_method = request.form.get('payment_method', 'wave')
-        if payment_method not in ('wave', 'quickbooks'):
-            payment_method = 'wave'
-
-        if not name:
-            errors['name'] = 'Name is required.'
-        if not email or '@' not in email:
-            errors['email'] = 'Valid email required.'
-        if service_type not in SERVICES:
-            errors['service_type'] = 'Please select a service.'
-
-        amount = None
-        if not errors and custom_amount:
-            try:
-                amount = float(custom_amount)
-                if amount <= 0:
-                    errors['custom_amount'] = 'Budget must be a positive number.'
-            except ValueError:
-                errors['custom_amount'] = 'Budget must be a valid number.'
-
-        if not errors:
-            if payment_method == 'quickbooks':
-                card_number = request.form.get('card_number', '').strip()
-                exp_month = request.form.get('card_exp_month', '').strip()
-                exp_year = request.form.get('card_exp_year', '').strip()
-                cvc = request.form.get('card_cvc', '').strip()
-
-                if not card_number or not exp_month or not exp_year or not cvc:
-                    errors['card'] = 'All card fields are required.'
-                else:
-                    from .providers.qbp import charge_card
-                    try:
-                        charge_id = charge_card(
-                            name=name,
-                            email=email,
-                            service_type=service_type,
-                            amount=amount,
-                            card_number=card_number,
-                            exp_month=exp_month,
-                            exp_year=exp_year,
-                            cvc=cvc,
-                        )
-                    except RuntimeError as e:
-                        msg = str(e)
-                        if 'declined' in msg.lower():
-                            flash('Your card was declined. Please try a different card.', 'error')
-                        else:
-                            current_app.logger.error('QBP charge_card failed: %s\n%s', e, traceback.format_exc())
-                            flash('Payment service temporarily unavailable. Please try again.', 'error')
-                        return render_template('subscriptions/subscribe.html',
-                                               services=SERVICES,
-                                               preselect=preselect,
-                                               errors=errors,
-                                               form_data=request.form)
-                    sub = Subscriber(
-                        name=name,
-                        email=email,
-                        service_type=service_type,
-                        custom_amount=amount,
-                        payment_provider='quickbooks',
-                        provider_customer_id=charge_id,
-                        status='active',
-                    )
-                    db.session.add(sub)
-                    db.session.commit()
-                    return redirect(url_for('subscriptions.success'))
-            else:
-                from .providers.wave import create_invoice
-                try:
-                    invoice_id, checkout_url = create_invoice(
-                        name=name,
-                        email=email,
-                        service_type=service_type,
-                        custom_amount=amount,
-                    )
-                except Exception:
-                    flash('Payment service temporarily unavailable. Please try again.', 'error')
-                    return render_template('subscriptions/subscribe.html',
-                                           services=SERVICES,
-                                           preselect=preselect,
-                                           errors=errors,
-                                           form_data=request.form)
-                sub = Subscriber(
-                    name=name,
-                    email=email,
-                    service_type=service_type,
-                    custom_amount=amount,
-                    payment_provider='wave',
-                    wave_invoice_id=invoice_id,
-                )
-                db.session.add(sub)
-                db.session.commit()
-                return redirect(checkout_url)
-
-        if errors:
-            return render_template('subscriptions/subscribe.html',
-                                   services=SERVICES,
-                                   preselect=preselect,
-                                   errors=errors,
-                                   form_data=request.form)
-
     return render_template('subscriptions/subscribe.html',
                            services=SERVICES,
-                           preselect=preselect,
-                           errors=errors,
-                           form_data=request.form)
+                           qbp_links=QBP_LINKS)
 
 
 @subscriptions_bp.route('/success')
@@ -142,14 +36,4 @@ def cancel():
 @subscriptions_bp.route('/webhooks/<provider>', methods=['POST'])
 @csrf.exempt
 def webhook(provider):
-    """Payment provider webhook handler."""
-    allowed = {'wave'}
-    if provider not in allowed:
-        return jsonify({'error': 'Unknown provider'}), 400
-
-    if provider == 'wave':
-        payload = request.get_json(silent=True) or {}
-        from .providers.wave import handle_webhook
-        handle_webhook(payload)
-
     return jsonify({'received': True, 'provider': provider}), 200
