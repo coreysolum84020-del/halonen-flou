@@ -61,3 +61,15 @@ def about():
 @main_bp.route('/artists')
 def artists():
     return render_template('artists.html', artists=ARTISTS)
+
+@main_bp.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@main_bp.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@main_bp.route('/refund')
+def refund():
+    return render_template('refund.html')
